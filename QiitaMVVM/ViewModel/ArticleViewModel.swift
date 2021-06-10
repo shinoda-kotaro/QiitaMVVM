@@ -25,10 +25,10 @@ protocol ArticleViewModelType {
 final class ArticleViewModel: ArticleViewModelType, ArticleViewModelInputs, ArticleViewModelOutputs {
     
     // MARK: - Inputs
-    let scrollTrigger = PublishRelay<Int>()
+    internal let scrollTrigger = PublishRelay<Int>()
     
     // MARK: - Outputs
-    var qiitaArticles = BehaviorRelay<[QiitaArticle]>(value: [])
+    internal var qiitaArticles = BehaviorRelay<[QiitaArticle]>(value: [])
     
     // MARK: - Props
 //    private let disposeBag = DisposeBag()
