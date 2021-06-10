@@ -31,7 +31,6 @@ final class ArticleViewModel: ArticleViewModelType, ArticleViewModelInputs, Arti
     internal var qiitaArticles = BehaviorRelay<[QiitaArticle]>(value: [])
     
     // MARK: - Props
-//    private let disposeBag = DisposeBag()
     private var qiitaApi = QiitaApi()
     
     // MARK: -
