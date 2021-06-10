@@ -41,11 +41,9 @@ final class ArticleViewModel: ArticleViewModelType, ArticleViewModelInputs, Arti
     init(disposeBag: DisposeBag){
         
         scrollTrigger.flatMap {
-            Observable.just($0)
-        }.bind { page in
-            self.qiitaApi.getArticles(page).bind(onNext: {articles in
-                self.qiitaArticles.accept(articles)
-            }).disposed(by: disposeBag)
+            self.qiitaApi.getArticles($0)
+        }.bind {
+            self.qiitaArticles.accept($0)
         }.disposed(by: disposeBag)
         
     }
