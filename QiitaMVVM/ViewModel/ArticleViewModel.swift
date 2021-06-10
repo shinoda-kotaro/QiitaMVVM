@@ -33,20 +33,21 @@ final class ArticleViewModel: ArticleViewModelType, ArticleViewModelInputs, Arti
     // MARK: - Props
     private var qiitaApi = QiitaApi()
     
-    // MARK: -
+    // MARK: - bind to View
     var inputs: ArticleViewModelInputs {return self}
     var outputs: ArticleViewModelOutputs {return self}
     
     // MARK: - initializer
     init(disposeBag: DisposeBag){
         
-        scrollTrigger.bind { page in
-            print("トリガーきたよ")
+        scrollTrigger.flatMap {
+            Observable.just($0)
+        }.bind { page in
             self.qiitaApi.getArticles(page).bind(onNext: {articles in
                 self.qiitaArticles.accept(articles)
             }).disposed(by: disposeBag)
         }.disposed(by: disposeBag)
-    
+        
     }
     
     // MARK: - functions
