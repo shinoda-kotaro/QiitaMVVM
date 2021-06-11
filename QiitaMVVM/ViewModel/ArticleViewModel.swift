@@ -10,11 +10,11 @@ import RxSwift
 import RxCocoa
 
 protocol ArticleViewModelInputs {
-    var scrollTrigger: PublishRelay<Int> {get}
+    var scrollTrigger: AnyObserver<Int> {get}
 }
 
 protocol ArticleViewModelOutputs {
-    var qiitaArticles: BehaviorRelay<[QiitaArticle]> {get}
+    var qiitaArticles: Observable<[QiitaArticle]> {get}
 }
 
 protocol ArticleViewModelType {
@@ -25,25 +25,40 @@ protocol ArticleViewModelType {
 final class ArticleViewModel: ArticleViewModelType, ArticleViewModelInputs, ArticleViewModelOutputs {
     
     // MARK: - Inputs
-    internal let scrollTrigger = PublishRelay<Int>()
+    internal let scrollTrigger: AnyObserver<Int>
     
     // MARK: - Outputs
-    internal var qiitaArticles = BehaviorRelay<[QiitaArticle]>(value: [])
+    internal var qiitaArticles: Observable<[QiitaArticle]>
     
     // MARK: - Props
-    private var qiitaApi = QiitaApi()
+    private var qiitaApi: QiitaApi
     
     // MARK: - bind to View
     var inputs: ArticleViewModelInputs {return self}
     var outputs: ArticleViewModelOutputs {return self}
     
     // MARK: - initializer
-    init(disposeBag: DisposeBag){
+    init(disposeBag: DisposeBag, qiitaApi: QiitaApi){
         
-        scrollTrigger.flatMap {
+        // DI
+        self.qiitaApi = qiitaApi
+        
+        // InputsをAnyObserverでラップ
+        let _scrollTrigger = PublishRelay<Int>()
+        self.scrollTrigger = AnyObserver<Int>() { event in
+            guard let page = event.element else {return}
+            _scrollTrigger.accept(page)
+        }
+        
+        // OutputsをObservableでラップ
+        let _qiitaArticles = BehaviorRelay<[QiitaArticle]>(value: [])
+        self.qiitaArticles = _qiitaArticles.asObservable()
+        
+        // Inputsからきた値をModelでデータに変換してOutputsに出力
+        _scrollTrigger.flatMap {
             self.qiitaApi.getArticles($0)
         }.bind {
-            self.qiitaArticles.accept($0)
+            _qiitaArticles.accept($0)
         }.disposed(by: disposeBag)
         
     }

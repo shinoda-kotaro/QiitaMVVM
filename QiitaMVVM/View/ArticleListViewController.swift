@@ -13,24 +13,24 @@ class ArticleListViewController: UIViewController {
     
     @IBOutlet weak var articleListTableView: UITableView!
     
+    private let qiitaApi = QiitaApi()
+    
     private let disposeBag = DisposeBag()
 
     private var qiitaArticles = BehaviorRelay<[QiitaArticle]>(value: [])
-    
-    
     
     private var page = BehaviorRelay<Int>(value: 1)
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        let viewModel = ArticleViewModel(disposeBag: disposeBag)
+        let viewModel = ArticleViewModel(disposeBag: disposeBag, qiitaApi: qiitaApi)
         
         articleListTableView.delegate = self
         articleListTableView.dataSource = self
         self.articleListTableView.register(UINib(nibName: "ArticleListTableViewCell", bundle: nil), forCellReuseIdentifier: "cell")
         
-        // 
+        // 記事一覧をストリームで取得
         viewModel.outputs.qiitaArticles.bind(to: qiitaArticles).disposed(by: disposeBag)
 
         // ページ数が更新されるたび、トリガーを流す
