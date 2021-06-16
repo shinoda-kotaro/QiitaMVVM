@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		E6801B16267351AA0018A1B0 /* ArticleListDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6801B15267351AA0018A1B0 /* ArticleListDataSource.swift */; };
 		E6973D5726709C9500E8FFEA /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6973D5626709C9500E8FFEA /* AppDelegate.swift */; };
 		E6973D5926709C9500E8FFEA /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6973D5826709C9500E8FFEA /* SceneDelegate.swift */; };
 		E6973D6026709C9600E8FFEA /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E6973D5F26709C9600E8FFEA /* Assets.xcassets */; };
@@ -24,6 +25,7 @@
 /* Begin PBXFileReference section */
 		19CAAE479BC0EF34370BB565 /* Pods_QiitaMVVM.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_QiitaMVVM.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		B05A259F814FF4D524B43A70 /* Pods-QiitaMVVM.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-QiitaMVVM.debug.xcconfig"; path = "Target Support Files/Pods-QiitaMVVM/Pods-QiitaMVVM.debug.xcconfig"; sourceTree = "<group>"; };
+		E6801B15267351AA0018A1B0 /* ArticleListDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArticleListDataSource.swift; sourceTree = "<group>"; };
 		E6973D5326709C9500E8FFEA /* QiitaMVVM.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = QiitaMVVM.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E6973D5626709C9500E8FFEA /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		E6973D5826709C9500E8FFEA /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -117,6 +119,7 @@
 			isa = PBXGroup;
 			children = (
 				E6973D772670BE4700E8FFEA /* ArticleViewModel.swift */,
+				E6801B15267351AA0018A1B0 /* ArticleListDataSource.swift */,
 			);
 			path = ViewModel;
 			sourceTree = "<group>";
@@ -262,6 +265,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				E6973D752670B83D00E8FFEA /* ArticleListTableViewCell.swift in Sources */,
+				E6801B16267351AA0018A1B0 /* ArticleListDataSource.swift in Sources */,
 				E6E33F2D2670D6B500DBE296 /* QiitaArticle.swift in Sources */,
 				E6973D7026709E7E00E8FFEA /* ArticleListViewController.swift in Sources */,
 				E6973D5726709C9500E8FFEA /* AppDelegate.swift in Sources */,

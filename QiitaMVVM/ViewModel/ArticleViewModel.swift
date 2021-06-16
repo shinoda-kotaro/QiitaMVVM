@@ -14,7 +14,7 @@ protocol ArticleViewModelInputs {
 }
 
 protocol ArticleViewModelOutputs {
-    var qiitaArticles: Observable<[QiitaArticle]> {get}
+    var qiitaArticles: Observable<[ArticleListTableViewSection]> {get}
 }
 
 protocol ArticleViewModelType {
@@ -28,7 +28,7 @@ final class ArticleViewModel: ArticleViewModelType, ArticleViewModelInputs, Arti
     internal let scrollTrigger: AnyObserver<Int>
     
     // MARK: - Outputs
-    internal var qiitaArticles: Observable<[QiitaArticle]>
+    internal var qiitaArticles: Observable<[ArticleListTableViewSection]>
     
     // MARK: - Props
     private var qiitaApi: QiitaApi
@@ -51,14 +51,14 @@ final class ArticleViewModel: ArticleViewModelType, ArticleViewModelInputs, Arti
         }
         
         // OutputsをObservableでラップ
-        let _qiitaArticles = BehaviorRelay<[QiitaArticle]>(value: [])
+        let _qiitaArticles = BehaviorRelay<[ArticleListTableViewSection]>(value: [ArticleListTableViewSection(items: [])])
         self.qiitaArticles = _qiitaArticles.asObservable()
         
         // Inputsからきた値をModelでデータに変換してOutputsに出力
         _scrollTrigger.flatMap {
             self.qiitaApi.getArticles($0)
         }.bind {
-            _qiitaArticles.accept($0)
+            _qiitaArticles.accept([ArticleListTableViewSection(items: $0)])
         }.disposed(by: disposeBag)
         
     }

@@ -8,59 +8,50 @@
 import UIKit
 import RxSwift
 import RxCocoa
+import RxDataSources
 
-class ArticleListViewController: UIViewController {
+class ArticleListViewController: UIViewController, UITableViewDelegate {
     
     @IBOutlet weak var articleListTableView: UITableView!
     
     private let qiitaApi = QiitaApi()
     
     private let disposeBag = DisposeBag()
-
-    private var qiitaArticles = BehaviorRelay<[QiitaArticle]>(value: [])
     
     private var page = BehaviorRelay<Int>(value: 1)
+    
+    private var dataSource: RxTableViewSectionedReloadDataSource<ArticleListTableViewSection>!
+    
+    private lazy var viewModel = ArticleViewModel(disposeBag: disposeBag, qiitaApi: qiitaApi)
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        let viewModel = ArticleViewModel(disposeBag: disposeBag, qiitaApi: qiitaApi)
-        
-        articleListTableView.delegate = self
-        articleListTableView.dataSource = self
+        // テーブルビューセルの設定
         self.articleListTableView.register(UINib(nibName: "ArticleListTableViewCell", bundle: nil), forCellReuseIdentifier: "cell")
+        // テーブルビューのdelegateを設定
+        self.articleListTableView.rx.setDelegate(self).disposed(by: disposeBag)
         
-        // 記事一覧をストリームで取得
-        viewModel.outputs.qiitaArticles.bind(to: qiitaArticles).disposed(by: disposeBag)
-
+        // データソースの設定
+        self.dataSource = RxTableViewSectionedReloadDataSource<ArticleListTableViewSection>(configureCell: { dataSource, tableView, indexPath, item in
+            let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: IndexPath(row: indexPath.row, section: 0)) as! ArticleListTableViewCell
+            cell.title.text = item.title
+            return cell
+        })
+        
+        // データソースをバインドさせて差分更新
+        self.viewModel.outputs.qiitaArticles
+            .bind(to: articleListTableView.rx.items(dataSource: dataSource))
+            .disposed(by: disposeBag)
+        
         // ページ数が更新されるたび、トリガーを流す
         page.bind(to: viewModel.inputs.scrollTrigger).disposed(by: disposeBag)
         
-        // 記事一覧が更新された時、テーブルビューを更新
-        qiitaArticles.skip(1).bind { _ in
-            self.articleListTableView.reloadData()
+        // ページの更新（無限スクロール）
+        articleListTableView.rx.willDisplayCell.filter { event in
+            event.indexPath.row >= self.articleListTableView.numberOfRows(inSection: 0) - 5 && self.articleListTableView.numberOfRows(inSection: 0) / 30 == self.page.value
+        }.bind { _ in
+            self.page.accept(self.page.value + 1)
         }.disposed(by: disposeBag)
     }
-    
-}
-
-extension ArticleListViewController: UITableViewDelegate, UITableViewDataSource{
-    
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return qiitaArticles.value.count
-    }
-    
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath) as! ArticleListTableViewCell
-        cell.title.text = qiitaArticles.value[indexPath.row].title
-        return cell
-    }
-    
-    // 記事取得のトリガーを流す
-    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-        if indexPath.row >= qiitaArticles.value.count - 5 && qiitaArticles.value.count / 30 == page.value {
-            page.accept(page.value + 1)
-        }
-    }
-    
 }

@@ -9,5 +9,6 @@ target 'QiitaMVVM' do
   pod 'Alamofire'
   pod 'RxSwift'
   pod 'RxCocoa'
+  pod 'RxDataSources'
 
 end
